@@ -97,12 +97,7 @@
   contactButton.disabled = !hasContact;
   contactButton.title = hasContact ? "Descargar los datos de contacto" : "Completa al menos un medio de contacto en profile.js";
   hint.hidden = contactList.children.length > 0;
-  if (contactList.children.length === 0) {
-    const empty = document.createElement("p");
-    empty.className = "contact-hint";
-    empty.textContent = "Añade correo, teléfono, WhatsApp o enlaces en profile.js para mostrar tus datos aquí.";
-    contactList.append(empty);
-  }
+  hint.textContent = "Añade correo, teléfono, WhatsApp o enlaces en profile.js para mostrar tus datos aquí.";
 
   function currentLayout(mode) {
     if (mode === "auto") return layoutQuery.matches ? "portrait" : "landscape";
@@ -148,6 +143,7 @@
     if (profile.role) lines.push("TITLE:" + escapeVCard(profile.role));
     if (email) lines.push("EMAIL;TYPE=INTERNET:" + escapeVCard(email));
     if (phone) lines.push("TEL;TYPE=CELL:" + escapeVCard(phone));
+    if (whatsapp && whatsapp !== phone) lines.push("TEL;TYPE=CELL:" + escapeVCard(whatsapp));
     if (website) lines.push("URL:" + escapeVCard(website));
     if (profile.tagline) lines.push("NOTE:" + escapeVCard(profile.tagline));
     lines.push("END:VCARD");
