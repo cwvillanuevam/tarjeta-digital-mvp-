@@ -85,7 +85,7 @@
   const location = text(profile.location, "");
   const mapUrl = location ? "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(location) : "";
 
-  if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) addContact("Correo", email, "mailto:" + email, "@", false);
+  const validEmail = email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? email : ""; if (validEmail) addContact("Correo", validEmail, "mailto:" + validEmail, "@", false);
   if (phone) addContact("Teléfono", phone, "tel:" + phone.replace(/[^\d+*#;,]/g, ""), "T", false);
   const whatsappDigits = whatsapp.replace(/\D/g, "");
   if (whatsappDigits.length >= 8) addContact("WhatsApp", whatsapp, "https://wa.me/" + whatsappDigits, "W", true);
@@ -93,7 +93,7 @@
   if (linkedin) addContact("LinkedIn", "Ver perfil profesional", linkedin, "in", true);
   if (location && mapUrl) addContact("Ubicación", location, mapUrl, "⌖", true);
 
-  const hasContact = Boolean(email || phone || whatsappDigits.length >= 8 || website || linkedin);
+  const hasContact = Boolean(validEmail || phone || whatsappDigits.length >= 8 || website || linkedin);
   contactButton.disabled = !hasContact;
   contactButton.title = hasContact ? "Descargar los datos de contacto" : "Completa al menos un medio de contacto en profile.js";
   hint.hidden = contactList.children.length > 0;
@@ -141,7 +141,7 @@
     ];
     if (profile.company) lines.push("ORG:" + escapeVCard(profile.company));
     if (profile.role) lines.push("TITLE:" + escapeVCard(profile.role));
-    if (email) lines.push("EMAIL;TYPE=INTERNET:" + escapeVCard(email));
+    if (validEmail) lines.push("EMAIL;TYPE=INTERNET:" + escapeVCard(validEmail));
     if (phone) lines.push("TEL;TYPE=CELL:" + escapeVCard(phone));
     if (whatsapp && whatsapp !== phone) lines.push("TEL;TYPE=CELL:" + escapeVCard(whatsapp));
     if (website) lines.push("URL:" + escapeVCard(website));
