@@ -177,27 +177,33 @@
     if (profile.tagline) lines.push("NOTE:" + escapeVCard(profile.tagline));
     lines.push("END:VCARD");
     const safeName = fullName.toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/^-|-$/g, "") || "contacto";
-    return new File([lines.join("\r\n") + "\r\n"], safeName + ".vcf", { type: "text/vcard;charset=utf-8" });
+    return {
+      blob: new Blob([lines.join("\r\n") + "\r\n"], { type: "text/vcard;charset=utf-8" }),
+      name: safeName + ".vcf"
+    };
   }
 
   async function addToContacts() {
-    const file = buildVCardFile();
+    const contactFile = buildVCardFile();
     // En móviles compatibles, abrir el menú nativo para compartir/importar el contacto.
-    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-      try {
-        await navigator.share({ files: [file], title: "Guardar contacto: " + fullName });
-        announce("Se abrió el menú del dispositivo para guardar o compartir el contacto.");
-        return;
-      } catch (error) {
-        if (error && error.name === "AbortError") return;
+    if (typeof File === "function" && navigator.share && navigator.canShare) {
+      const file = new File([contactFile.blob], contactFile.name, { type: "text/vcard;charset=utf-8" });
+      if (navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({ files: [file], title: "Guardar contacto: " + fullName });
+          announce("Se abrió el menú del dispositivo para guardar o compartir el contacto.");
+          return;
+        } catch (error) {
+          if (error && error.name === "AbortError") return;
+        }
       }
     }
     // Alternativa compatible: descargar el vCard, que el usuario puede abrir con Contactos.
-    const blob = new Blob([file], { type: "text/vcard;charset=utf-8" });
+    const blob = contactFile.blob;
     const objectUrl = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
     anchor.href = objectUrl;
-    anchor.download = file.name;
+    anchor.download = contactFile.name;
     document.body.append(anchor);
     anchor.click();
     anchor.remove();
