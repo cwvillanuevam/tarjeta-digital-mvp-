@@ -161,7 +161,7 @@
     return String(value || "").replace(/\\/g, "\\\\").replace(/\r\n|\n|\r/g, "\\n").replace(/,/g, "\\,").replace(/;/g, "\\;");
   }
 
-  function downloadVCard() {
+  function buildVCardFile() {
     const lines = [
       "BEGIN:VCARD",
       "VERSION:3.0",
@@ -176,16 +176,33 @@
     if (website) lines.push("URL:" + escapeVCard(website));
     if (profile.tagline) lines.push("NOTE:" + escapeVCard(profile.tagline));
     lines.push("END:VCARD");
-    const blob = new Blob([lines.join("\r\n") + "\r\n"], { type: "text/vcard;charset=utf-8" });
+    const safeName = fullName.toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/^-|-$/g, "") || "contacto";
+    return new File([lines.join("\r\n") + "\r\n"], safeName + ".vcf", { type: "text/vcard;charset=utf-8" });
+  }
+
+  async function addToContacts() {
+    const file = buildVCardFile();
+    // En móviles compatibles, abrir el menú nativo para compartir/importar el contacto.
+    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+      try {
+        await navigator.share({ files: [file], title: "Guardar contacto: " + fullName });
+        announce("Se abrió el menú del dispositivo para guardar o compartir el contacto.");
+        return;
+      } catch (error) {
+        if (error && error.name === "AbortError") return;
+      }
+    }
+    // Alternativa compatible: descargar el vCard, que el usuario puede abrir con Contactos.
+    const blob = new Blob([file], { type: "text/vcard;charset=utf-8" });
     const objectUrl = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
     anchor.href = objectUrl;
-    anchor.download = (fullName.toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/^-|-$/g, "") || "contacto") + ".vcf";
+    anchor.download = file.name;
     document.body.append(anchor);
     anchor.click();
     anchor.remove();
-    URL.revokeObjectURL(objectUrl);
-    announce("Contacto descargado. Abre el archivo .vcf para guardarlo en tu agenda.");
+    window.setTimeout(function () { URL.revokeObjectURL(objectUrl); }, 1500);
+    announce("Se preparó el contacto. Abre el archivo .vcf para añadirlo a tu agenda.");
   }
 
   async function copyLink() {
@@ -229,7 +246,7 @@
     }
   });
 
-  contactButton.addEventListener("click", downloadVCard);
+  contactButton.addEventListener("click", addToContacts);
   document.getElementById("print-button").addEventListener("click", function () {
     window.print();
   });
