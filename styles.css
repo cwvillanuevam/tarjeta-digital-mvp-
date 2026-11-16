@@ -414,3 +414,22 @@ body.presentation-mode #fullscreen-button { color: #fff; border-color: var(--ink
   body.presentation-mode { height: auto; overflow: visible; }
   body.presentation-mode .page-shell { height: auto; overflow: visible; }
 }
+
+
+/* En móviles, separar las acciones en dos columnas para evitar toques equivocados. */
+@media (max-width: 700px) {
+  body.presentation-mode .action-bar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+  }
+  body.presentation-mode #fullscreen-button { grid-column: 1; }
+  body.presentation-mode #share-button { grid-column: 2; }
+  body.presentation-mode #contact-button { grid-column: 1; }
+  body.presentation-mode #download-qr-button { grid-column: 2; }
+  body.presentation-mode .action-button {
+    min-height: 42px;
+    padding-right: 9px;
+    padding-left: 9px;
+    font-size: 10px;
+  }
+}
