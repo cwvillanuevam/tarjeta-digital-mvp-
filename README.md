@@ -1,63 +1,56 @@
-# Tarjeta Digital — MVP
+# Tarjeta profesional — Carlos Wyller Villanueva Machado
 
-Tarjeta de presentación en una página web estática, diseñada para ocupar toda la pantalla sin desplazamiento, adaptable a móviles y escritorio. No requiere frameworks, instalación de dependencias ni backend.
+Tarjeta de presentación digital estática, adaptable a móviles y escritorio, con enlaces profesionales y una ficha de contacto vCard. Se publica mediante GitHub Pages; no requiere backend ni dependencias externas para funcionar.
+
+## Datos del perfil
+
+El archivo `profile.js` contiene los datos visibles y los enlaces públicos del titular:
+- Nombre, cargo y organización.
+- Correo personal y teléfono.
+- Portafolio, LinkedIn, GitHub y ORCID.
+- Descripción profesional y áreas de especialización.
+
+Los campos vacíos no se muestran. No se incluye dirección física ni correo institucional. El repositorio y la web son públicos: cualquier dato incluido en `profile.js` puede ser consultado por los visitantes. Revisa los datos antes de añadir información nueva.
 
 ## Funcionalidades
 
-- Presentación a pantalla completa, sin scroll, con adaptación automática a orientación vertical en móviles y horizontal en pantallas amplias.
-- Controles compactos para cambiar manualmente la orientación.
-- Selector manual de tarjeta vertical u horizontal.
-- Datos de perfil configurables desde un único archivo.
-- Enlaces de correo, teléfono, WhatsApp, web, LinkedIn y ubicación (solo se muestran los campos completados).
-- Compartir mediante el menú nativo del dispositivo o copiar el enlace.
-- Añadir contacto mediante el menú nativo de compartir/importar cuando el navegador lo permite; como alternativa, descargar un archivo \`.vcf\` compatible con agendas habituales.
-- Vista de impresión para guardar como PDF o imprimir.
-- Sin analítica, cookies, formularios ni almacenamiento de datos personales en un servidor.
+- Tarjeta profesional vertical u horizontal con adaptación automática al dispositivo.
+- Modo de presentación a pantalla completa, sin scroll, activado por el usuario.
+- Enlaces directos a correo, teléfono, portafolio y perfiles profesionales.
+- Compartir la tarjeta mediante el menú nativo del dispositivo o copiar el enlace.
+- Añadir a contactos mediante el menú nativo de compartir archivos cuando el navegador lo admite.
+- Alternativa de descarga de un archivo vCard `.vcf`, compatible con aplicaciones de contactos.
+- Descarga de un QR estático que apunta a la URL pública de la tarjeta.
+- Vista de impresión para guardar como PDF.
+- Sin analítica, cookies, formularios ni almacenamiento de contactos en un servidor.
+
+## Añadir a contactos desde un móvil
+
+1. Pulsa **Añadir a contactos**.
+2. En Android compatible, el navegador abre el menú nativo de compartir: selecciona **Contactos** o la opción de guardar contacto que ofrezca el dispositivo.
+3. Si el navegador no puede compartir archivos, se descarga un archivo `.vcf`. Ábrelo desde Descargas y confirma la importación en Contactos.
+
+El proceso requiere confirmación del usuario; una página web no puede guardar datos silenciosamente en la agenda del teléfono.
 
 ## Personalización
 
-1. Abre [profile.js](./profile.js).
-2. Reemplaza el nombre, cargo, organización y descripción.
-3. Completa únicamente los medios de contacto que quieras publicar. Deja los demás como cadena vacía (\`""\`).
-4. Para WhatsApp, utiliza el número internacional con código de país, solo dígitos.
-5. Para fotografía, web y LinkedIn, utiliza direcciones HTTPS.
-6. Guarda los cambios y vuelve a cargar la página.
+Edita `profile.js` y deja como cadena vacía (`""`) cualquier campo que no quieras publicar. Para añadir un perfil social, utiliza una URL HTTPS. WhatsApp solo debe completarse cuando se haya confirmado el número internacional correspondiente.
 
-**Importante:** el repositorio es público y la web publicada también lo será. No incluyas domicilio particular, datos sensibles ni medios de contacto que no quieras hacer públicos. Los datos colocados en \`profile.js\` se entregan al navegador de cualquier visitante.
+## Publicación
 
-## Publicación en GitHub Pages
+El workflow de GitHub Actions publica automáticamente la rama `main` en GitHub Pages. La URL pública es:
 
-El flujo de GitHub Actions en \`.github/workflows/deploy.yml\` publica automáticamente el contenido de la rama \`main\`.
-
-1. En GitHub, abre **Settings → Pages**.
-2. En **Build and deployment**, selecciona **GitHub Actions** como fuente si todavía no está configurada.
-3. Abre la pestaña **Actions** y comprueba que el flujo **Deploy static site to GitHub Pages** finalice correctamente.
-4. La URL esperada para este repositorio es:  
-   \`https://cwvillanuevam.github.io/tarjeta-digital-mvp-/\`
-
-La primera publicación puede requerir habilitar Pages desde Settings. El flujo no publica hasta que GitHub Pages esté habilitado.
+`https://cwvillanuevam.github.io/tarjeta-digital-mvp-/`
 
 ## Código QR
 
-El QR contiene la URL pública `https://cwvillanuevam.github.io/tarjeta-digital-mvp-/`. Es estático: no cambia al editar el perfil, siempre que se mantenga la misma URL del sitio. Si cambias el nombre del repositorio o el dominio publicado, tendrás que regenerar e imprimir un QR nuevo. La generación se realiza en el navegador; no se envían datos a un generador externo.
+El QR contiene la URL pública canónica. Es estático y no cambia al actualizar los datos del perfil mientras se mantenga la misma URL del sitio. La generación se realiza localmente en el navegador.
 
 ## Estructura
 
-- \`index.html\`: estructura y contenido de la página.
-- \`styles.css\`: diseño y reglas responsive/impresión.
-- \`app.js\`: interacciones y generación del contacto vCard.
-- \`profile.js\`: datos editables del titular.
-- \`.github/workflows/deploy.yml\`: publicación en GitHub Pages.
-
-## Pruebas manuales recomendadas
-
-- Abrir en móvil y escritorio.
-- Cambiar entre Auto, Vertical y Horizontal.
-- Probar los enlaces de contacto después de personalizar \`profile.js\`.
-- Descargar y abrir el archivo \`.vcf\`.
-- Probar Compartir desde un navegador móvil compatible.
-- Usar Imprimir y revisar la vista previa antes de guardar o imprimir.
-
-## Licencia
-
-Este proyecto conserva la licencia indicada en el repositorio.
+- `index.html`: estructura y contenido de la página.
+- `styles.css`: diseño responsive, presentación e impresión.
+- `app.js`: interacciones, generación de vCard y QR.
+- `profile.js`: datos y enlaces públicos del titular.
+- `.github/workflows/deploy.yml`: publicación en GitHub Pages.
+- `vendor/qrcode.js`: generador de QR local.
