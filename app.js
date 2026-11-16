@@ -75,6 +75,11 @@
   setText("profile-company", profile.company, "Tu organización");
   setText("company-label", profile.brand || profile.company, "TU MARCA");
   setText("profile-tagline", profile.tagline, "Una breve presentación que cuente qué haces y el valor que aportas.");
+  const focusNode = document.getElementById("profile-focus");
+  if (focusNode) {
+    focusNode.textContent = text(profile.focus, "");
+    focusNode.hidden = !text(profile.focus, "");
+  }
 
   const initials = fullName.split(/\s+/).filter(Boolean).slice(0, 2).map(function (part) {
     return part.charAt(0).toUpperCase();
@@ -121,6 +126,8 @@
   const whatsapp = text(profile.whatsapp, "");
   const website = safeWebUrl(profile.website);
   const linkedin = safeWebUrl(profile.linkedin);
+  const github = safeWebUrl(profile.github);
+  const orcid = safeWebUrl(profile.orcid);
   const location = text(profile.location, "");
   const mapUrl = location ? "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(location) : "";
 
@@ -128,13 +135,16 @@
   if (phone) addContact("Teléfono", phone, "tel:" + phone.replace(/[^\d+*#;,]/g, ""), "T", false);
   const whatsappDigits = whatsapp.replace(/\D/g, "");
   if (whatsappDigits.length >= 8) addContact("WhatsApp", whatsapp, "https://wa.me/" + whatsappDigits, "W", true);
-  if (website) addContact("Web", profile.website, website, "↗", true);
+  if (website) addContact("Portafolio", "Ver proyectos y experiencia", website, "↗", true);
   if (linkedin) addContact("LinkedIn", "Ver perfil profesional", linkedin, "in", true);
+  if (github) addContact("GitHub", "Ver repositorios", github, "GH", true);
+  if (orcid) addContact("ORCID", "Ver perfil de investigación", orcid, "iD", true);
   if (location && mapUrl) addContact("Ubicación", location, mapUrl, "⌖", true);
 
-  const hasContact = Boolean(validEmail || phone || whatsappDigits.length >= 8 || website || linkedin);
+  // Se puede guardar un contacto aunque el visitante solo quiera conservar nombre y cargo.
+  const hasContact = Boolean(fullName && fullName !== "Tu nombre y apellido");
   contactButton.disabled = !hasContact;
-  contactButton.title = hasContact ? "Descargar los datos de contacto" : "Completa al menos un medio de contacto en profile.js";
+  contactButton.title = hasContact ? "Compartir o descargar la ficha para guardarla en Contactos" : "Completa el nombre del titular en profile.js";
   hint.hidden = contactList.children.length > 0;
   hint.textContent = "Añade correo, teléfono, WhatsApp o enlaces en profile.js para mostrar tus datos aquí.";
 
@@ -197,57 +207,101 @@
   });
 
   function escapeVCard(value) {
-    return String(value || "").replace(/\\/g, "\\\\").replace(/\r\n|\n|\r/g, "\\n").replace(/,/g, "\\,").replace(/;/g, "\\;");
+    return String(value || "")
+      .replace(/\\/g, "\\\\")
+      .replace(/\r\n|\n|\r/g, "\\n")
+      .replace(/,/g, "\\,")
+      .replace(/;/g, "\\;");
+  }
+
+  function foldVCardLine(line) {
+    const encoder = typeof TextEncoder === "function" ? new TextEncoder() : null;
+    const parts = [];
+    let current = "";
+    let byteCount = 0;
+    Array.from(line).forEach(function (character) {
+      const size = encoder ? encoder.encode(character).length : unescape(encodeURIComponent(character)).length;
+      if (byteCount + size > 75) {
+        parts.push(current);
+        current = " " + character;
+        byteCount = 1 + size;
+      } else {
+        current += character;
+        byteCount += size;
+      }
+    });
+    parts.push(current);
+    return parts.join("\r\n");
   }
 
   function buildVCardFile() {
+    const givenName = text(profile.givenName, "");
+    const familyName = text(profile.familyName, "");
+    const note = [profile.tagline, profile.focus].filter(function (value) {
+      return typeof value === "string" && value.trim();
+    }).join(" | ");
     const lines = [
       "BEGIN:VCARD",
       "VERSION:3.0",
       "FN:" + escapeVCard(fullName),
-      "N:" + escapeVCard(fullName) + ";;;;"
+      "N:" + escapeVCard(familyName) + ";" + escapeVCard(givenName) + ";;;"
     ];
+
     if (profile.company) lines.push("ORG:" + escapeVCard(profile.company));
     if (profile.role) lines.push("TITLE:" + escapeVCard(profile.role));
     if (validEmail) lines.push("EMAIL;TYPE=INTERNET:" + escapeVCard(validEmail));
     if (phone) lines.push("TEL;TYPE=CELL:" + escapeVCard(phone));
     if (whatsapp && whatsapp !== phone) lines.push("TEL;TYPE=CELL:" + escapeVCard(whatsapp));
-    if (website) lines.push("URL:" + escapeVCard(website));
-    if (profile.tagline) lines.push("NOTE:" + escapeVCard(profile.tagline));
+    if (website) lines.push("URL;TYPE=WORK:" + escapeVCard(website));
+    if (linkedin) lines.push("URL;TYPE=PROFILE:" + escapeVCard(linkedin));
+    if (github) lines.push("URL;TYPE=WORK:" + escapeVCard(github));
+    if (orcid) lines.push("URL;TYPE=WORK:" + escapeVCard(orcid));
+    if (note) lines.push("NOTE:" + escapeVCard(note));
     lines.push("END:VCARD");
-    const safeName = fullName.toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/^-|-$/g, "") || "contacto";
+
+    const safeName = fullName.normalize("NFKD").toLowerCase()
+      .replace(/[^a-z0-9-]+/g, "-").replace(/^-|-$/g, "") || "contacto";
+    const content = lines.map(foldVCardLine).join("\r\n") + "\r\n";
     return {
-      blob: new Blob([lines.join("\r\n") + "\r\n"], { type: "text/vcard;charset=utf-8" }),
+      blob: new Blob([content], { type: "text/vcard;charset=utf-8" }),
       name: safeName + ".vcf"
     };
   }
 
+  function downloadVCard(contactFile) {
+    const objectUrl = URL.createObjectURL(contactFile.blob);
+    const anchor = document.createElement("a");
+    anchor.href = objectUrl;
+    anchor.download = contactFile.name;
+    anchor.style.display = "none";
+    document.body.append(anchor);
+    anchor.click();
+    anchor.remove();
+    window.setTimeout(function () { URL.revokeObjectURL(objectUrl); }, 3000);
+    announce("Se descargó el contacto .vcf. En Android, abre la descarga y confirma Guardar en Contactos.");
+  }
+
   async function addToContacts() {
     const contactFile = buildVCardFile();
-    // En móviles compatibles, abrir el menú nativo para compartir/importar el contacto.
-    if (typeof File === "function" && navigator.share && navigator.canShare) {
-      const file = new File([contactFile.blob], contactFile.name, { type: "text/vcard;charset=utf-8" });
+
+    // En Android y otros móviles compatibles se abre el menú nativo para compartir/importar.
+    if (typeof File === "function" && typeof navigator.share === "function" &&
+        typeof navigator.canShare === "function") {
+      const file = new File([contactFile.blob], contactFile.name, { type: "text/vcard" });
+      const shareData = { files: [file], title: "Guardar contacto: " + fullName };
       if (navigator.canShare({ files: [file] })) {
         try {
-          await navigator.share({ files: [file], title: "Guardar contacto: " + fullName });
-          announce("Se abrió el menú del dispositivo para guardar o compartir el contacto.");
+          await navigator.share(shareData);
+          announce("Elige Contactos en el menú del dispositivo para guardar esta ficha.");
           return;
         } catch (error) {
           if (error && error.name === "AbortError") return;
         }
       }
     }
-    // Alternativa compatible: descargar el vCard, que el usuario puede abrir con Contactos.
-    const blob = contactFile.blob;
-    const objectUrl = URL.createObjectURL(blob);
-    const anchor = document.createElement("a");
-    anchor.href = objectUrl;
-    anchor.download = contactFile.name;
-    document.body.append(anchor);
-    anchor.click();
-    anchor.remove();
-    window.setTimeout(function () { URL.revokeObjectURL(objectUrl); }, 1500);
-    announce("Se preparó el contacto. Abre el archivo .vcf para añadirlo a tu agenda.");
+
+    // Respaldo para navegadores que no comparten archivos vCard: descarga directa del .vcf.
+    downloadVCard(contactFile);
   }
 
   async function copyLink() {
