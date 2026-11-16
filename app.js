@@ -9,6 +9,45 @@
   const contactButton = document.getElementById("contact-button");
   const layoutButtons = Array.from(document.querySelectorAll("[data-layout-button]"));
   const layoutQuery = window.matchMedia("(max-width: 700px)");
+  const fullscreenButton = document.getElementById("fullscreen-button");
+
+  function setPresentationMode(enabled) {
+    document.body.classList.toggle("presentation-mode", enabled);
+    fullscreenButton.setAttribute("aria-pressed", String(enabled));
+    fullscreenButton.innerHTML = enabled
+      ? '<span class="button-icon" aria-hidden="true">⤢</span> Salir de pantalla completa'
+      : '<span class="button-icon" aria-hidden="true">⛶</span> Pantalla completa';
+  }
+
+  fullscreenButton.addEventListener("click", async function () {
+    const entering = !document.body.classList.contains("presentation-mode");
+    if (!entering) {
+      if (document.fullscreenElement && document.exitFullscreen) {
+        try { await document.exitFullscreen(); } catch (_) { /* Se mantiene la salida visual. */ }
+      }
+      setPresentationMode(false);
+      return;
+    }
+
+    setPresentationMode(true);
+    // La API nativa oculta también la interfaz del navegador cuando está disponible.
+    if (document.documentElement.requestFullscreen) {
+      try {
+        await document.documentElement.requestFullscreen();
+      } catch (_) {
+        announce("Modo de presentación activado. Este navegador no permite ocultar su barra superior.");
+      }
+    } else {
+      announce("Modo de presentación activado. Este navegador conserva sus controles del sistema.");
+    }
+  });
+
+  document.addEventListener("fullscreenchange", function () {
+    if (!document.fullscreenElement && document.body.classList.contains("presentation-mode")) {
+      setPresentationMode(false);
+    }
+  });
+
 
   function text(value, fallback) {
     return typeof value === "string" && value.trim() ? value.trim() : fallback;
