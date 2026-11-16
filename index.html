@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10252b">
+  <meta name="description" content="Tarjeta de presentación digital, adaptable a cualquier pantalla y fácil de compartir.">
+  <title>Tarjeta digital</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script src="profile.js"></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <a class="wordmark" href="./" aria-label="Tarjeta digital, inicio">
+        <span class="wordmark-symbol" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span>tarjeta<span class="wordmark-light">digital</span></span>
+      </a>
+      <span class="header-note">PRESENTACIÓN PERSONAL</span>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="page-title">
+        <p class="eyebrow"><span class="eyebrow-dot"></span> TU IDENTIDAD, EN UN SOLO LUGAR</p>
+        <h1 id="page-title">Tu contacto.<br><span>Tu tarjeta.</span></h1>
+        <p class="intro-copy">Una presentación clara, siempre disponible y lista para compartir desde cualquier dispositivo.</p>
+      </section>
+
+      <section class="workspace" aria-label="Vista previa de la tarjeta">
+        <div class="workspace-heading">
+          <div>
+            <p class="section-kicker">VISTA PREVIA</p>
+            <h2>Así te verán</h2>
+          </div>
+          <div class="orientation-control" role="group" aria-label="Orientación de la tarjeta">
+            <button class="orientation-button is-active" type="button" data-layout-button="auto" aria-pressed="true" title="Adaptar a la pantalla">
+              <span class="orientation-icon icon-auto" aria-hidden="true"></span><span>Auto</span>
+            </button>
+            <button class="orientation-button" type="button" data-layout-button="portrait" aria-pressed="false" title="Formato vertical">
+              <span class="orientation-icon icon-portrait" aria-hidden="true"></span><span>Vertical</span>
+            </button>
+            <button class="orientation-button" type="button" data-layout-button="landscape" aria-pressed="false" title="Formato horizontal">
+              <span class="orientation-icon icon-landscape" aria-hidden="true"></span><span>Horizontal</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="card-stage">
+          <article class="business-card" id="business-card" data-layout="auto">
+            <div class="card-topline">
+              <div class="card-brand">
+                <span class="brand-mark" aria-hidden="true"><span></span><span></span></span>
+                <span id="company-label">TU MARCA</span>
+              </div>
+              <span class="card-edition">PERFIL DIGITAL</span>
+            </div>
+
+            <div class="card-main">
+              <div class="identity-column">
+                <div class="avatar" id="avatar" aria-label="Iniciales del titular">
+                  <span id="avatar-initials">TN</span>
+                </div>
+                <div class="identity-copy">
+                  <p class="identity-label">HOLA, SOY</p>
+                  <h2 id="profile-name">Tu nombre y apellido</h2>
+                  <p class="profile-role" id="profile-role">Cargo o especialidad</p>
+                  <p class="profile-company" id="profile-company">Tu organización</p>
+                </div>
+                <p class="profile-tagline" id="profile-tagline">Una breve presentación que cuente qué haces y el valor que aportas.</p>
+              </div>
+
+              <div class="contact-column">
+                <div class="contact-heading">
+                  <span class="contact-heading-line"></span>
+                  <span>CONVERSEMOS</span>
+                </div>
+                <div class="contact-list" id="contact-list" aria-live="polite"></div>
+                <p class="contact-hint" id="contact-hint">Completa tus datos de contacto para activar los enlaces.</p>
+                <div class="card-bottom">
+                  <span class="availability-dot"></span>
+                  <span>Disponible para conectar</span>
+                </div>
+              </div>
+            </div>
+            <div class="card-decoration" aria-hidden="true"></div>
+          </article>
+        </div>
+
+        <div class="action-bar" aria-label="Acciones de la tarjeta">
+          <button class="action-button action-primary" id="share-button" type="button">
+            <span class="button-icon" aria-hidden="true">↗</span> Compartir tarjeta
+          </button>
+          <button class="action-button" id="contact-button" type="button">
+            <span class="button-icon" aria-hidden="true">＋</span> Guardar contacto
+          </button>
+          <button class="action-button action-print" id="print-button" type="button">
+            <span class="button-icon" aria-hidden="true">▤</span> Imprimir
+          </button>
+        </div>
+
+        <p class="status-message" id="status-message" role="status" aria-live="polite"></p>
+      </section>
+
+      <section class="setup-note" aria-label="Personalización">
+        <div class="setup-icon" aria-hidden="true">✳</div>
+        <div>
+          <h2>Tu tarjeta empieza aquí</h2>
+          <p>Esta es una plantilla funcional. Personaliza el archivo <code>profile.js</code> con tu nombre, cargo y medios de contacto. No necesitas instalar nada ni usar un servidor.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>UNA TARJETA. MUCHAS FORMAS DE CONECTAR.</span>
+      <span>Diseñada para cualquier pantalla.</span>
+    </footer>
+  </div>
+</body>
+</html>
