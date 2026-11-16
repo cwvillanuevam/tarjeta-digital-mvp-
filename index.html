@@ -9,6 +9,7 @@
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
   <script src="profile.js"></script>
+  <script src="vendor/qrcode.js"></script>
   <script src="app.js" defer></script>
 </head>
 <body>
@@ -78,6 +79,10 @@
                 </div>
                 <div class="contact-list" id="contact-list" aria-live="polite"></div>
                 <p class="contact-hint" id="contact-hint">Completa tus datos de contacto para activar los enlaces.</p>
+                <div class="qr-panel" aria-label="Código QR permanente de esta tarjeta">
+                  <div class="qr-code" id="qr-code" role="img" aria-label="Código QR para abrir esta tarjeta digital"></div>
+                  <div class="qr-copy"><span class="qr-label">ESCANEA Y CONECTA</span><strong>Esta es mi tarjeta digital</strong><span class="qr-url">Accede a mis datos y formas de contacto.</span></div>
+                </div>
                 <div class="card-bottom">
                   <span class="availability-dot"></span>
                   <span>Disponible para conectar</span>
@@ -94,6 +99,9 @@
           </button>
           <button class="action-button" id="contact-button" type="button">
             <span class="button-icon" aria-hidden="true">＋</span> Guardar contacto
+          </button>
+          <button class="action-button" id="download-qr-button" type="button">
+            <span class="button-icon" aria-hidden="true">▦</span> Descargar QR
           </button>
           <button class="action-button action-print" id="print-button" type="button">
             <span class="button-icon" aria-hidden="true">▤</span> Imprimir
