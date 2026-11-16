@@ -36,6 +36,10 @@ El flujo de GitHub Actions en \`.github/workflows/deploy.yml\` publica automáti
 
 La primera publicación puede requerir habilitar Pages desde Settings. El flujo no publica hasta que GitHub Pages esté habilitado.
 
+## Código QR
+
+El QR contiene la URL pública `https://cwvillanuevam.github.io/tarjeta-digital-mvp-/`. Es estático: no cambia al editar el perfil, siempre que se mantenga la misma URL del sitio. Si cambias el nombre del repositorio o el dominio publicado, tendrás que regenerar e imprimir un QR nuevo. La generación se realiza en el navegador; no se envían datos a un generador externo.
+
 ## Estructura
 
 - \`index.html\`: estructura y contenido de la página.
