@@ -1,15 +1,16 @@
 # Tarjeta Digital — MVP
 
-Tarjeta de presentación en una página web estática, adaptable a móviles y escritorio. No requiere frameworks, instalación de dependencias ni backend.
+Tarjeta de presentación en una página web estática, diseñada para ocupar toda la pantalla sin desplazamiento, adaptable a móviles y escritorio. No requiere frameworks, instalación de dependencias ni backend.
 
 ## Funcionalidades
 
-- Diseño adaptable con orientación automática según el ancho de pantalla.
+- Presentación a pantalla completa, sin scroll, con adaptación automática a orientación vertical en móviles y horizontal en pantallas amplias.
+- Controles compactos para cambiar manualmente la orientación.
 - Selector manual de tarjeta vertical u horizontal.
 - Datos de perfil configurables desde un único archivo.
 - Enlaces de correo, teléfono, WhatsApp, web, LinkedIn y ubicación (solo se muestran los campos completados).
 - Compartir mediante el menú nativo del dispositivo o copiar el enlace.
-- Descargar contacto como archivo \`.vcf\` compatible con agendas habituales.
+- Añadir contacto mediante el menú nativo de compartir/importar cuando el navegador lo permite; como alternativa, descargar un archivo \`.vcf\` compatible con agendas habituales.
 - Vista de impresión para guardar como PDF o imprimir.
 - Sin analítica, cookies, formularios ni almacenamiento de datos personales en un servidor.
 
