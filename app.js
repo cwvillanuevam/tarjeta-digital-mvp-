@@ -193,29 +193,70 @@
   }
 
   const downloadQrButton = document.getElementById("download-qr-button");
-  downloadQrButton.addEventListener("click", function (event) {
+
+  function serializeQrSvg() {
+    const svgElement = qrContainer.querySelector("svg");
+    if (svgElement && typeof XMLSerializer === "function") {
+      const svgCopy = svgElement.cloneNode(true);
+      if (!svgCopy.hasAttribute("xmlns")) {
+        svgCopy.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+      }
+      if (!svgCopy.hasAttribute("viewBox")) {
+        const width = Number.parseFloat(svgCopy.getAttribute("width")) || 300;
+        const height = Number.parseFloat(svgCopy.getAttribute("height")) || 300;
+        svgCopy.setAttribute("viewBox", "0 0 " + width + " " + height);
+      }
+      return new XMLSerializer().serializeToString(svgCopy);
+    }
+    return qrSvgMarkup || "";
+  }
+
+  function handleQrDownload(event) {
     event.preventDefault();
     event.stopPropagation();
+    if (typeof event.stopImmediatePropagation === "function") {
+      event.stopImmediatePropagation();
+    }
+
     if (!qrSvgMarkup) {
       announce("El código QR aún no está disponible. Recarga la página e inténtalo nuevamente.");
       return;
     }
 
-    // Descarga explícita del SVG; se conserva el objeto URL hasta que Android procese el archivo.
-    const svgDocument = '<?xml version="1.0" encoding="UTF-8"?>\\n' + qrSvgMarkup;
-    const blob = new Blob([svgDocument], { type: "image/svg+xml;charset=utf-8" });
-    const objectUrl = URL.createObjectURL(blob);
-    const anchor = document.createElement("a");
-    anchor.href = objectUrl;
-    anchor.download = "tarjeta-digital-qr.svg";
-    anchor.type = "image/svg+xml";
-    anchor.style.display = "none";
-    document.body.append(anchor);
-    anchor.click();
-    anchor.remove();
-    window.setTimeout(function () { URL.revokeObjectURL(objectUrl); }, 3000);
-    announce("Descargando tarjeta-digital-qr.svg.");
-  });
+    const svgDocument = serializeQrSvg();
+    if (!svgDocument || !/<svg[\\s>]/i.test(svgDocument)) {
+      announce("No se pudo preparar el QR en formato SVG. Recarga la página e inténtalo nuevamente.");
+      return;
+    }
+
+    try {
+      const svgBlob = new Blob([svgDocument], { type: "image/svg+xml;charset=utf-8" });
+      const objectUrl = URL.createObjectURL(svgBlob);
+      const downloadLink = document.createElement("a");
+      downloadLink.href = objectUrl;
+      downloadLink.download = "tarjeta-digital-qr.svg";
+      downloadLink.type = "image/svg+xml";
+      downloadLink.setAttribute("aria-hidden", "true");
+      downloadLink.tabIndex = -1;
+      downloadLink.style.position = "fixed";
+      downloadLink.style.left = "-9999px";
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      downloadLink.remove();
+
+      // Algunos navegadores móviles procesan la descarga de forma diferida.
+      window.setTimeout(function () {
+        URL.revokeObjectURL(objectUrl);
+      }, 60000);
+
+      announce("Descargando el código QR como tarjeta-digital-qr.svg.");
+    } catch (_) {
+      announce("El navegador no pudo descargar el SVG. Inténtalo desde el menú del navegador.");
+    }
+  }
+
+  // Captura el toque en el propio botón QR y evita que llegue a otras acciones.
+  downloadQrButton.addEventListener("click", handleQrDownload, true);
 
   function escapeVCard(value) {
     return String(value || "")
