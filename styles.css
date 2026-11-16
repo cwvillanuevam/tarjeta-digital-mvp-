@@ -61,6 +61,7 @@ button { cursor: pointer; }
 .profile-role { margin: 10px 0 0; color: #3f5555; font-size: 14px; font-weight: 650; }
 .profile-company { margin: 4px 0 0; color: #84918d; font-size: 12px; }
 .profile-tagline { max-width: 330px; margin: 20px 0 0; color: #667672; font-size: 12px; line-height: 1.65; }
+.profile-focus { max-width: 350px; margin: 9px 0 0; color: var(--accent-dark); font-size: 10px; font-weight: 650; line-height: 1.55; }
 .contact-column { display: flex; flex-direction: column; margin-top: 31px; padding-top: 20px; border-top: 1px solid #e8ede8; }
 .contact-heading { display: flex; align-items: center; gap: 8px; color: #82908c; font-size: 8px; }
 .contact-heading-line { width: 18px; height: 1px; background: var(--accent); }
@@ -78,6 +79,7 @@ button { cursor: pointer; }
 .business-card[data-layout="landscape"] .avatar { grid-row: span 3; width: 68px; height: 68px; margin: 0; border-radius: 18px; }
 .business-card[data-layout="landscape"] .identity-copy h2 { font-size: 28px; }
 .business-card[data-layout="landscape"] .profile-tagline { grid-column: 1 / -1; margin-top: 21px; }
+.business-card[data-layout="landscape"] .profile-focus { grid-column: 1 / -1; margin-top: 7px; }
 .business-card[data-layout="landscape"] .contact-column { margin: 0; padding: 2px 0 0 27px; border-top: 0; border-left: 1px solid #e8ede8; }
 .business-card[data-layout="landscape"] .contact-list { gap: 8px; margin-top: 13px; }
 .business-card[data-layout="landscape"] .card-bottom { padding-top: 18px; }
@@ -115,6 +117,7 @@ button { cursor: pointer; }
   .business-card[data-layout="landscape"] .profile-company { font-size: 9px; }
   .business-card[data-layout="landscape"] .identity-label { margin-bottom: 6px; font-size: 7px; }
   .business-card[data-layout="landscape"] .profile-tagline { margin-top: 13px; font-size: 10px; line-height: 1.45; }
+  .business-card[data-layout="landscape"] .profile-focus { margin-top: 5px; font-size: 8px; line-height: 1.35; }
   .business-card[data-layout="landscape"] .contact-column { padding-left: 13px; }
   .business-card[data-layout="landscape"] .contact-link { gap: 6px; font-size: 9px; }
   .business-card[data-layout="landscape"] .contact-icon { flex-basis: 21px; width: 21px; height: 21px; border-radius: 7px; font-size: 9px; }
