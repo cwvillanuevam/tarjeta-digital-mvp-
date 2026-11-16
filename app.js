@@ -128,6 +128,35 @@
     status.textContent = message;
   }
 
+  // QR permanente: apunta a la URL pública canónica, no a una URL temporal del navegador.
+  const CARD_PUBLIC_URL = "https://cwvillanuevam.github.io/tarjeta-digital-mvp-/";
+  const qrContainer = document.getElementById("qr-code");
+  let qrSvgMarkup = "";
+  try {
+    const qr = qrcode(0, "M");
+    qr.addData(CARD_PUBLIC_URL);
+    qr.make();
+    qrSvgMarkup = qr.createSvgTag({ cellSize: 5, margin: 3, scalable: true });
+    qrContainer.innerHTML = qrSvgMarkup;
+  } catch (_) {
+    qrContainer.textContent = "QR no disponible";
+    document.getElementById("download-qr-button").disabled = true;
+  }
+
+  document.getElementById("download-qr-button").addEventListener("click", function () {
+    if (!qrSvgMarkup) return;
+    const blob = new Blob([qrSvgMarkup], { type: "image/svg+xml;charset=utf-8" });
+    const objectUrl = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = objectUrl;
+    anchor.download = "tarjeta-digital-qr.svg";
+    document.body.append(anchor);
+    anchor.click();
+    anchor.remove();
+    URL.revokeObjectURL(objectUrl);
+    announce("QR descargado en SVG. Puedes imprimirlo o incorporarlo a tus materiales.");
+  });
+
   function escapeVCard(value) {
     return String(value || "").replace(/\\/g, "\\\\").replace(/\r\n|\n|\r/g, "\\n").replace(/,/g, "\\,").replace(/;/g, "\\;");
   }
