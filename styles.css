@@ -66,7 +66,8 @@ button { cursor: pointer; }
 .contact-heading { display: flex; align-items: center; gap: 8px; color: #82908c; font-size: 8px; }
 .contact-heading-line { width: 18px; height: 1px; background: var(--accent); }
 .contact-list { display: grid; gap: 9px; margin-top: 15px; }
-.contact-link { display: flex; align-items: center; gap: 10px; min-width: 0; color: var(--ink); text-decoration: none; font-size: 11px; font-weight: 620; overflow-wrap: anywhere; }
+.contact-link { display: flex; align-items: center; gap: 8px; min-width: 0; color: var(--ink); text-decoration: none; font-size: 11px; font-weight: 620; overflow-wrap: normal; word-break: normal; }
+.contact-link > span:last-child { min-width: 0; overflow-wrap: break-word; word-break: normal; }
 .contact-link:hover { color: var(--accent-dark); }
 .contact-icon { display: inline-flex; flex: 0 0 25px; align-items: center; justify-content: center; width: 25px; height: 25px; border-radius: 8px; color: var(--accent-dark); background: #edf6f1; font-size: 11px; }
 .contact-hint { margin: 13px 0 0; color: #9aa5a0; font-size: 10px; line-height: 1.5; }
@@ -166,13 +167,26 @@ button { cursor: pointer; }
 }
 
 /* QR permanente integrado en la tarjeta */
-.qr-panel { display: flex; align-items: center; gap: 13px; margin-top: 18px; padding: 10px 12px; border: 1px solid #e8ede8; border-radius: 11px; background: rgba(247,250,247,.88); }
-.qr-code { display: flex; flex: 0 0 76px; align-items: center; justify-content: center; width: 76px; height: 76px; padding: 4px; border-radius: 7px; background: #fff; }
+.qr-panel {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  grid-template-areas: "code copy" "code url";
+  align-items: center;
+  column-gap: 12px;
+  row-gap: 4px;
+  margin-top: 18px;
+  padding: 10px 12px;
+  border: 1px solid #e8ede8;
+  border-radius: 11px;
+  background: rgba(247,250,247,.88);
+}
+.qr-code { grid-area: code; display: flex; align-items: center; justify-content: center; width: 76px; height: 76px; padding: 4px; border-radius: 7px; background: #fff; }
 .qr-code svg { display: block; width: 100%; height: 100%; }
-.qr-copy { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.qr-copy { grid-area: copy; display: flex; flex-direction: column; gap: 5px; min-width: 0; align-self: end; }
 .qr-label { color: var(--accent-dark); font-size: 7px; font-weight: 800; letter-spacing: 1.1px; }
 .qr-copy strong { color: var(--ink); font-size: 10px; }
-.qr-url { color: #82908c; font-size: 9px; line-height: 1.4; }
+.qr-url { grid-area: url; color: #82908c; font-size: 9px; line-height: 1.4; align-self: start; }
 .business-card[data-layout="landscape"] .qr-panel { margin-top: 12px; padding: 7px 9px; gap: 9px; }
 .business-card[data-layout="landscape"] .qr-code { flex-basis: 60px; width: 60px; height: 60px; }
 .business-card[data-layout="landscape"] .qr-copy strong { font-size: 9px; }
@@ -221,13 +235,18 @@ body.presentation-mode .business-card .contact-icon { flex-basis: 21px; width: 2
 body.presentation-mode .business-card .qr-panel { margin-top: clamp(6px, 1vh, 10px); padding: 5px 7px; }
 body.presentation-mode .business-card .qr-code { flex-basis: 47px; width: 47px; height: 47px; }
 body.presentation-mode .business-card .card-bottom { padding-top: 7px; }
-body.presentation-mode .business-card[data-layout="landscape"] .card-main { min-height: 0; padding-top: clamp(8px, 1.6vh, 16px); }
+body.presentation-mode .business-card[data-layout="landscape"] .card-main {
+  min-height: 0;
+  grid-template-columns: minmax(0, .82fr) minmax(0, 1.18fr);
+  gap: clamp(12px, 2.4vw, 30px);
+  padding-top: clamp(8px, 1.6vh, 16px);
+}
 body.presentation-mode .business-card[data-layout="landscape"] .identity-column,
 body.presentation-mode .business-card[data-layout="landscape"] .contact-column { min-width: 0; }
 /* El QR lateral se reserva para la vista de presentación a pantalla completa. */
 body.presentation-mode .business-card[data-layout="landscape"] .contact-column {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(150px, .82fr);
+  grid-template-columns: minmax(0, 1.25fr) minmax(112px, .72fr);
   grid-template-areas:
     "heading heading"
     "list qr"
@@ -245,41 +264,44 @@ body.presentation-mode .business-card[data-layout="landscape"] .qr-panel {
   grid-area: qr;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: auto auto auto auto;
+  grid-template-rows: auto auto auto;
+  grid-template-areas: "copy" "code" "url";
   justify-items: center;
   align-content: center;
   align-self: center;
   min-width: 0;
   width: 100%;
-  max-width: 230px;
+  max-width: 172px;
   margin: 6px auto 0;
-  padding: 10px 12px;
-  gap: 5px;
+  padding: 9px 10px;
+  gap: 6px;
   text-align: center;
 }
 body.presentation-mode .business-card[data-layout="landscape"] .qr-panel .qr-copy {
-  display: contents;
+  grid-area: copy;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: end;
+  gap: 4px;
+  width: 100%;
 }
 body.presentation-mode .business-card[data-layout="landscape"] .qr-panel .qr-label {
-  grid-row: 1;
-  align-self: end;
   font-size: 7px;
   letter-spacing: .9px;
 }
 body.presentation-mode .business-card[data-layout="landscape"] .qr-panel .qr-copy strong {
-  grid-row: 2;
   font-size: 10px;
   line-height: 1.3;
 }
 body.presentation-mode .business-card[data-layout="landscape"] .qr-panel .qr-code {
-  grid-row: 3;
-  width: 76px;
-  height: 76px;
-  flex-basis: 76px;
+  grid-area: code;
+  width: 68px;
+  height: 68px;
   padding: 4px;
 }
 body.presentation-mode .business-card[data-layout="landscape"] .qr-panel .qr-url {
-  grid-row: 4;
+  grid-area: url;
   font-size: 8px;
   line-height: 1.35;
 }
@@ -308,7 +330,11 @@ body.presentation-mode #fullscreen-button { color: #fff; border-color: var(--ink
   body.presentation-mode .card-stage { padding: 2px 5px; }
   body.presentation-mode .business-card { max-width: 520px; padding: 12px 15px 9px; }
   body.presentation-mode .business-card[data-layout="landscape"] { max-width: none; padding: 9px 10px 7px; }
-  body.presentation-mode .business-card[data-layout="landscape"] .card-main { grid-template-columns: 1fr .95fr; gap: 7px; padding-top: 8px; }
+  body.presentation-mode .business-card[data-layout="landscape"] .card-main {
+    grid-template-columns: minmax(0, .68fr) minmax(0, 1.32fr);
+    gap: 8px;
+    padding-top: 8px;
+  }
   body.presentation-mode .business-card[data-layout="landscape"] .identity-column { grid-template-columns: 37px minmax(0,1fr); column-gap: 7px; }
   body.presentation-mode .business-card[data-layout="landscape"] .avatar { width: 35px; height: 35px; margin: 0; }
   body.presentation-mode .business-card[data-layout="landscape"] .identity-copy h2 { font-size: clamp(14px, 3vh, 20px); }
@@ -318,23 +344,37 @@ body.presentation-mode #fullscreen-button { color: #fff; border-color: var(--ink
   body.presentation-mode .business-card[data-layout="landscape"] .contact-column {
     margin: 0;
     padding: 0 0 0 7px;
-    grid-template-columns: minmax(0, 1fr) minmax(92px, .72fr);
-    column-gap: 5px;
+    grid-template-columns: minmax(0, 1.2fr) minmax(94px, .7fr);
+    column-gap: 7px;
   }
-  body.presentation-mode .business-card[data-layout="landscape"] .contact-link { font-size: 7px; }
+  body.presentation-mode .business-card[data-layout="landscape"] .contact-link { font-size: 8px; gap: 5px; }
+  body.presentation-mode .business-card[data-layout="landscape"] .contact-link > span:last-child { overflow-wrap: break-word; word-break: normal; }
   body.presentation-mode .business-card[data-layout="landscape"] .contact-icon { flex-basis: 16px; width: 16px; height: 16px; }
   body.presentation-mode .business-card[data-layout="landscape"] .qr-panel {
-    max-width: 145px;
+    max-width: 132px;
     margin-top: 3px;
-    padding: 4px;
-    gap: 3px;
+    padding: 5px 4px;
+    gap: 4px;
   }
-  body.presentation-mode .business-card[data-layout="landscape"] .qr-panel .qr-label { font-size: 5px; }
+  body.presentation-mode .business-card[data-layout="landscape"] .qr-panel .qr-copy { gap: 3px; }
+  body.presentation-mode .business-card[data-layout="landscape"] .qr-panel .qr-label { font-size: 5px; letter-spacing: .5px; }
   body.presentation-mode .business-card[data-layout="landscape"] .qr-panel .qr-copy strong { font-size: 7px; }
-  body.presentation-mode .business-card[data-layout="landscape"] .qr-panel .qr-code { flex-basis: 42px; width: 42px; height: 42px; padding: 2px; }
+  body.presentation-mode .business-card[data-layout="landscape"] .qr-panel .qr-code { width: 54px; height: 54px; padding: 2px; }
   body.presentation-mode .business-card[data-layout="landscape"] .qr-panel .qr-url { display: block; font-size: 6px; }
   body.presentation-mode .action-bar { gap: 4px; padding-right: 5px; padding-left: 5px; }
   body.presentation-mode .action-button { font-size: 8px; }
+}
+@media (max-width: 380px) {
+  body.presentation-mode .business-card[data-layout="landscape"] .contact-column {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  body.presentation-mode .business-card[data-layout="landscape"] .qr-panel {
+    align-self: center;
+    max-width: 180px;
+    margin: 7px auto 0;
+  }
 }
 @media (max-width: 360px) {
   body.presentation-mode .action-button { font-size: 7px; }
