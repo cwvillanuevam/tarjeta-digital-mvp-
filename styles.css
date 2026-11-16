@@ -172,3 +172,84 @@ button { cursor: pointer; }
 @media print {
   .qr-panel { break-inside: avoid; }
 }
+
+/* Experiencia de tarjeta a pantalla completa: sin scroll de página */
+html, body { width: 100%; height: 100%; min-height: 100%; overflow: hidden; overscroll-behavior: none; }
+body { min-height: 100svh; min-height: 100dvh; background: var(--paper); }
+.page-shell { width: 100%; max-width: none; height: 100svh; height: 100dvh; min-height: 0; margin: 0; padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); display: flex; flex-direction: column; overflow: hidden; }
+.site-header, .intro, .setup-note, .site-footer { display: none !important; }
+main { display: flex; flex: 1 1 auto; min-height: 0; }
+.workspace { display: flex; flex: 1 1 auto; flex-direction: column; min-height: 0; width: 100%; padding: 0; }
+.workspace-heading { flex: 0 0 auto; min-height: 46px; margin: 0; padding: 5px 12px; justify-content: flex-end; align-items: center; }
+.workspace-heading > div:first-child { display: none; }
+.orientation-control { margin-left: auto; }
+.card-stage { display: flex; flex: 1 1 auto; align-items: stretch; justify-content: center; min-height: 0; padding: 7px 10px; overflow: hidden; border: 0; border-radius: 0; background: transparent; }
+.business-card { width: 100%; max-width: 560px; height: 100%; min-height: 0; padding: clamp(17px, 3.4vh, 30px) clamp(20px, 4vw, 34px) 15px; border-radius: 18px; }
+.business-card[data-layout="landscape"] { width: 100%; max-width: 1120px; height: 100%; min-height: 0; padding: clamp(14px, 2.7vh, 26px) clamp(22px, 4vw, 42px) 14px; }
+.business-card .card-main { min-height: 0; padding-top: clamp(15px, 2.8vh, 27px); }
+.business-card .avatar { width: clamp(48px, 8vh, 68px); height: clamp(48px, 8vh, 68px); margin-bottom: clamp(9px, 1.7vh, 16px); border-radius: 16px; }
+.business-card .identity-copy h2 { font-size: clamp(23px, 4.1vh, 34px); }
+.business-card .profile-tagline { margin-top: clamp(9px, 1.8vh, 16px); font-size: clamp(10px, 1.55vh, 12px); line-height: 1.45; }
+.business-card .contact-column { margin-top: clamp(12px, 2vh, 19px); padding-top: clamp(10px, 1.6vh, 16px); }
+.business-card .contact-list { gap: clamp(5px, .9vh, 8px); margin-top: 9px; }
+.business-card .contact-link { font-size: clamp(9px, 1.45vh, 11px); }
+.business-card .contact-icon { flex-basis: 22px; width: 22px; height: 22px; }
+.business-card .qr-panel { margin-top: clamp(8px, 1.4vh, 13px); padding: 6px 9px; }
+.business-card .qr-code { flex-basis: 54px; width: 54px; height: 54px; }
+.business-card .card-bottom { padding-top: 10px; }
+.business-card[data-layout="landscape"] .card-main { min-height: 0; padding-top: clamp(12px, 2.2vh, 22px); }
+.business-card[data-layout="landscape"] .identity-column { min-width: 0; }
+.business-card[data-layout="landscape"] .contact-column { min-width: 0; }
+.business-card[data-layout="landscape"] .qr-panel { margin-top: 8px; padding: 5px 7px; }
+.business-card[data-layout="landscape"] .qr-code { flex-basis: 48px; width: 48px; height: 48px; }
+.action-bar { flex: 0 0 auto; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; width: 100%; max-width: 760px; margin: 0 auto; padding: 5px 10px max(8px, env(safe-area-inset-bottom)); }
+.action-button { min-width: 0; min-height: 40px; padding: 0 7px; gap: 5px; border-radius: 9px; font-size: 10px; white-space: nowrap; }
+.action-print { display: none; }
+.action-primary { grid-column: auto; }
+.status-message { flex: 0 0 auto; min-height: 15px; margin: 0; padding: 0 8px 3px; font-size: 10px; }
+@media (max-height: 700px) {
+  .workspace-heading { min-height: 39px; }
+  .card-stage { padding-top: 4px; padding-bottom: 4px; }
+  .business-card { padding-top: 12px; padding-bottom: 9px; }
+  .business-card .card-main { padding-top: 10px; }
+  .business-card .avatar { width: 43px; height: 43px; margin-bottom: 7px; }
+  .business-card .profile-tagline { margin-top: 7px; }
+  .business-card .contact-column { margin-top: 9px; padding-top: 8px; }
+  .business-card .qr-panel { margin-top: 6px; }
+  .business-card .qr-code { flex-basis: 42px; width: 42px; height: 42px; }
+  .business-card .card-bottom { padding-top: 6px; }
+  .action-button { min-height: 35px; }
+}
+@media (max-width: 700px) {
+  .page-shell { width: 100%; }
+  .workspace-heading { min-height: 40px; }
+  .card-stage { padding: 3px 6px; }
+  .business-card { max-width: 520px; padding: 16px 19px 12px; }
+  .business-card[data-layout="landscape"] { max-width: none; padding: 12px 13px 9px; }
+  .business-card[data-layout="landscape"] .card-main { grid-template-columns: 1fr .95fr; gap: 9px; padding-top: 12px; }
+  .business-card[data-layout="landscape"] .identity-column { grid-template-columns: 42px minmax(0,1fr); column-gap: 8px; }
+  .business-card[data-layout="landscape"] .avatar { width: 40px; height: 40px; margin: 0; }
+  .business-card[data-layout="landscape"] .identity-copy h2 { font-size: clamp(15px, 3.2vh, 21px); }
+  .business-card[data-layout="landscape"] .profile-role { font-size: 9px; }
+  .business-card[data-layout="landscape"] .profile-company { font-size: 8px; }
+  .business-card[data-layout="landscape"] .profile-tagline { margin-top: 9px; font-size: 9px; }
+  .business-card[data-layout="landscape"] .contact-column { margin: 0; padding: 0 0 0 8px; }
+  .business-card[data-layout="landscape"] .contact-link { font-size: 8px; }
+  .business-card[data-layout="landscape"] .contact-icon { flex-basis: 18px; width: 18px; height: 18px; }
+  .business-card[data-layout="landscape"] .qr-panel { margin-top: 6px; padding: 4px; }
+  .business-card[data-layout="landscape"] .qr-code { flex-basis: 37px; width: 37px; height: 37px; }
+  .business-card[data-layout="landscape"] .qr-url { display: none; }
+  .action-bar { gap: 5px; padding-right: 6px; padding-left: 6px; }
+  .action-button { font-size: 9px; }
+}
+@media (max-width: 360px) {
+  .action-button { font-size: 8px; }
+  .business-card { padding-right: 14px; padding-left: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .business-card, .action-button { transition: none; }
+}
+@media print {
+  html, body { height: auto; overflow: visible; }
+  .page-shell { height: auto; overflow: visible; }
+}
