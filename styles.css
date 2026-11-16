@@ -307,8 +307,34 @@ body.presentation-mode .business-card[data-layout="landscape"] .qr-panel .qr-url
 }
 body.presentation-mode .business-card[data-layout="landscape"] .card-bottom { grid-area: bottom; }
 body.presentation-mode .business-card[data-layout="landscape"] .qr-code { flex-basis: 42px; width: 42px; height: 42px; }
-body.presentation-mode .action-bar { flex: 0 0 auto; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; width: 100%; max-width: 780px; margin: 0 auto; padding: 5px 8px max(7px, env(safe-area-inset-bottom)); }
-body.presentation-mode .action-button { min-width: 0; min-height: 38px; padding: 0 5px; gap: 4px; border-radius: 8px; font-size: 9px; white-space: nowrap; }
+body.presentation-mode .action-bar {
+  position: relative;
+  z-index: 20;
+  isolation: isolate;
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  width: 100%;
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 5px 8px max(7px, env(safe-area-inset-bottom));
+}
+body.presentation-mode .action-button {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  min-height: 38px;
+  padding: 0 5px;
+  gap: 4px;
+  border-radius: 8px;
+  font-size: 9px;
+  white-space: nowrap;
+}
+body.presentation-mode #fullscreen-button { grid-column: 1; }
+body.presentation-mode #share-button { grid-column: 2; }
+body.presentation-mode #contact-button { grid-column: 3; }
+body.presentation-mode #download-qr-button { grid-column: 4; }
 body.presentation-mode .action-print { display: none; }
 body.presentation-mode .status-message { flex: 0 0 auto; min-height: 13px; margin: 0; padding: 0 6px 2px; font-size: 9px; }
 body.presentation-mode #fullscreen-button { color: #fff; border-color: var(--ink); background: var(--ink); }
